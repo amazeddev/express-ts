@@ -20,7 +20,7 @@ const getBookByIdHandler = async (req: Request, res: Response) => {
     const response = await bookService.getBookById(id);
 
     if (!response) {
-      res.status(404).json({ msg: "Book not found" });
+      return res.status(404).json({ error: "Book not found" });
     }
 
     res.json({
@@ -69,6 +69,7 @@ const updateBookByIdHandler = async (req: Request, res: Response) => {
     });
   }
 };
+
 const deleteBookByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
 

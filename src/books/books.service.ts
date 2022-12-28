@@ -10,16 +10,15 @@ const createBook = async (input: BookInput) => {
 };
 
 const deleteBookById = async (id: string) => {
-  await Book.findOneAndDelete({ id });
+  await Book.findByIdAndDelete(id);
 };
 
 const updateBookById = async (id: string, input: BookInput) => {
   const { title, author, published } = input;
-  return await Book.findOneAndUpdate(
-    { id },
-    {
-      $set: { title, author, published },
-    }
+  return await Book.findByIdAndUpdate(
+    id,
+    { title, author, published },
+    { new: true }
   );
 };
 
