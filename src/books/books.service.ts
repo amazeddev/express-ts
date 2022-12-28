@@ -1,74 +1,26 @@
-const randomId = () => Math.random().toString(36).slice(2, 7);
+import { Book, BookInput } from "./books.model";
 
-type Book = {
-  id: string;
-  title: string;
-  author: string;
-  published: number;
-};
+const getAllBooks = async () => await Book.find({});
 
-type BookInput = Omit<Book, "id">;
+const getBookById = async (id: string) => await Book.findById(id);
 
-let books: Book[] = [
-  {
-    id: randomId(),
-    title: "Lód",
-    author: "Dukaj",
-    published: 2007,
-  },
-];
-
-const getAllBooks = (): Book[] => books;
-
-const getBookById = (id: string): Book | undefined =>
-  books.find((book) => book.id === id);
-
-const createBook = (input: BookInput): Book => {
+const createBook = async (input: BookInput) => {
   const { title, author, published } = input;
-  const newBook = {
-    id: randomId(),
-    title,
-    author,
-    published,
-  };
-  books.push(newBook);
-  return newBook;
+  return await Book.create({ title, author, published });
 };
 
-const deleteBookById = (id: string): void => {
-  books = books.filter((user) => user.id !== id);
+const deleteBookById = async (id: string) => {
+  await Book.findOneAndDelete({ id });
 };
 
-const updateBookById = (id: string, input: BookInput): Book => {
+const updateBookById = async (id: string, input: BookInput) => {
   const { title, author, published } = input;
-  const existingBook = books.find((book) => book.id === id);
-
-  if (!existingBook) {
-    const newBook = {
-      id: randomId(),
-      title,
-      author,
-      published,
-    };
-    books.push(newBook);
-    return newBook;
-  }
-
-  const updatedBook: Book = {
-    id,
-    title: title ? title : existingBook?.title,
-    author: author ? author : existingBook?.author,
-    published: published ? published : existingBook?.published,
-  };
-
-  books = books.map((book) => {
-    if (book.id === id) {
-      return updatedBook;
-    } else {
-      return book;
+  return await Book.findOneAndUpdate(
+    { id },
+    {
+      $set: { title, author, published },
     }
-  });
-  return existingBook;
+  );
 };
 
 export default {

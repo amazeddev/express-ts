@@ -1,52 +1,86 @@
 import { Request, Response } from "express";
 import bookService from "./books.service";
 
-const getAllBooksHandler = (req: Request, res: Response) => {
-  const response = bookService.getAllBooks();
-  res.json({
-    data: response,
-  });
-};
-
-const getBookByIdHandler = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const response = bookService.getBookById(id);
-
-  if (!response) {
-    res.status(404).json({ msg: "Book not found" });
+const getAllBooksHandler = async (req: Request, res: Response) => {
+  try {
+    res.json({
+      data: await bookService.getAllBooks(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
   }
-
-  res.json({
-    data: response,
-  });
 };
 
-const createBookHandler = (req: Request, res: Response) => {
+const getBookByIdHandler = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const response = await bookService.getBookById(id);
+
+    if (!response) {
+      res.status(404).json({ msg: "Book not found" });
+    }
+
+    res.json({
+      data: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
+};
+
+const createBookHandler = async (req: Request, res: Response) => {
   const { title, author, published } = req.body;
 
-  const response = bookService.createBook({ title, author, published });
+  try {
+    const response = await bookService.createBook({ title, author, published });
 
-  res.status(201).json({
-    data: response,
-  });
+    res.status(201).json({
+      data: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
 };
 
-const updateBookByIdHandler = (req: Request, res: Response) => {
+const updateBookByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, author, published } = req.body;
 
-  const response = bookService.updateBookById(id, { title, author, published });
+  try {
+    const response = await bookService.updateBookById(id, {
+      title,
+      author,
+      published,
+    });
 
-  res.status(200).json({
-    data: response,
-  });
+    res.status(200).json({
+      data: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
 };
-const deleteBookByIdHandler = (req: Request, res: Response) => {
+const deleteBookByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  bookService.deleteBookById(id);
+  try {
+    await bookService.deleteBookById(id);
 
-  res.status(204);
+    res.status(204);
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
 };
 
 export default {
