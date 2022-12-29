@@ -1,51 +1,62 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { ApplicationError } from "../errors/application.error";
 import bookService from "./books.service";
 import {
   createBookValidator,
   updateBookValidator,
 } from "./utils/validation.utils";
 
-const getAllBooksHandler = async (req: Request, res: Response) => {
+const getAllBooksHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     res.json({
       data: await bookService.getAllBooks(),
     });
   } catch (error) {
-    res.status(500).json({
-      error,
-    });
+    next(error);
   }
 };
 
-const getBookByIdHandler = async (req: Request, res: Response) => {
+const getBookByIdHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
     const response = await bookService.getBookById(id);
 
     if (!response) {
-      return res.status(404).json({ error: "Book not found" });
+      next(new ApplicationError(404, "Book not found"));
     }
 
     res.json({
       data: response,
     });
   } catch (error) {
-    res.status(500).json({
-      error,
-    });
+    next(error);
   }
 };
 
-const createBookHandler = async (req: Request, res: Response) => {
+const createBookHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { title, author, published, cover } = req.body;
 
-  // Validate request
   const { error } = createBookValidator({ title, author, published, cover });
   if (error) {
-    return res.status(400).json({
-      error: error.details.map((err) => err.message).join(","),
-    });
+    next(
+      new ApplicationError(
+        400,
+        error.details.map((err) => err.message).join(",")
+      )
+    );
   }
 
   try {
@@ -60,22 +71,26 @@ const createBookHandler = async (req: Request, res: Response) => {
       data: response,
     });
   } catch (error) {
-    res.status(500).json({
-      error,
-    });
+    next(error);
   }
 };
 
-const updateBookByIdHandler = async (req: Request, res: Response) => {
+const updateBookByIdHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const { title, author, published, cover } = req.body;
 
-  // Validate request
   const { error } = updateBookValidator({ title, author, published, cover });
   if (error) {
-    return res.status(400).json({
-      error: error.details.map((err) => err.message).join(","),
-    });
+    next(
+      new ApplicationError(
+        400,
+        error.details.map((err) => err.message).join(",")
+      )
+    );
   }
 
   try {
@@ -90,13 +105,15 @@ const updateBookByIdHandler = async (req: Request, res: Response) => {
       data: response,
     });
   } catch (error) {
-    res.status(500).json({
-      error,
-    });
+    next(error);
   }
 };
 
-const deleteBookByIdHandler = async (req: Request, res: Response) => {
+const deleteBookByIdHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
@@ -104,9 +121,7 @@ const deleteBookByIdHandler = async (req: Request, res: Response) => {
 
     res.status(204);
   } catch (error) {
-    res.status(500).json({
-      error,
-    });
+    next(error);
   }
 };
 
