@@ -34,10 +34,15 @@ const getBookByIdHandler = async (req: Request, res: Response) => {
 };
 
 const createBookHandler = async (req: Request, res: Response) => {
-  const { title, author, published } = req.body;
+  const { title, author, published, cover } = req.body;
 
   try {
-    const response = await bookService.createBook({ title, author, published });
+    const response = await bookService.createBook({
+      title,
+      author,
+      published,
+      cover,
+    });
 
     res.status(201).json({
       data: response,
@@ -51,13 +56,14 @@ const createBookHandler = async (req: Request, res: Response) => {
 
 const updateBookByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, author, published } = req.body;
+  const { title, author, published, cover } = req.body;
 
   try {
     const response = await bookService.updateBookById(id, {
       title,
       author,
       published,
+      cover,
     });
 
     res.status(200).json({
