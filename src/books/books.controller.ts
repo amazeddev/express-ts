@@ -1,19 +1,19 @@
-import { Request, Response } from "express";
-import bookService from "./books.service";
+import { Request, Response } from 'express';
+import bookService from './books.service';
 
-const getAllBooksHandler = (req: Request, res: Response) => {
+const getAllBooksHandler = (req: Request, res: Response): any => {
   const response = bookService.getAllBooks();
   res.json({
     data: response,
   });
 };
 
-const getBookByIdHandler = (req: Request, res: Response) => {
+const getBookByIdHandler = (req: Request, res: Response): any => {
   const { id } = req.params;
   const response = bookService.getBookById(id);
 
   if (!response) {
-    res.status(404).json({ msg: "Book not found" });
+    res.status(404).json({ msg: 'Book not found' });
   }
 
   res.json({
@@ -21,7 +21,7 @@ const getBookByIdHandler = (req: Request, res: Response) => {
   });
 };
 
-const createBookHandler = (req: Request, res: Response) => {
+const createBookHandler = (req: Request, res: Response): any => {
   const { title, author, published } = req.body;
 
   const response = bookService.createBook({ title, author, published });
@@ -31,7 +31,7 @@ const createBookHandler = (req: Request, res: Response) => {
   });
 };
 
-const updateBookByIdHandler = (req: Request, res: Response) => {
+const updateBookByIdHandler = (req: Request, res: Response): any => {
   const { id } = req.params;
   const { title, author, published } = req.body;
 
@@ -41,7 +41,7 @@ const updateBookByIdHandler = (req: Request, res: Response) => {
     data: response,
   });
 };
-const deleteBookByIdHandler = (req: Request, res: Response) => {
+const deleteBookByIdHandler = (req: Request, res: Response): any => {
   const { id } = req.params;
 
   bookService.deleteBookById(id);
