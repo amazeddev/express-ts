@@ -3,8 +3,8 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["prettier", "standard-with-typescript"],
-  "plugins": ["prettier"],
+  "extends": ["prettier", "standard-with-typescript", "eslint-config-prettier"],
+  "plugins": ["prettier", "eslint-plugin-prettier"],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -12,7 +12,6 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "prettier/prettier": "error",
-    "@typescript-eslint/semi": "off"
+    "prettier/prettier": "error"
   }
 }
